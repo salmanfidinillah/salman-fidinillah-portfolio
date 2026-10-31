@@ -214,6 +214,8 @@ export default function App() {
   return (
     <MotionConfig reducedMotion="user"><a className="skip-link" href="#portfolio-main-viewport">{lang === 'ID' ? 'Langsung ke konten' : 'Skip to content'}</a><div id="portfolio-app-root" className="editorial-app min-h-screen flex flex-col justify-between font-sans relative">
 
+      <div className="site-ambient" aria-hidden="true"><span className="ambient-blob ambient-one" /><span className="ambient-blob ambient-two" /><span className="ambient-blob ambient-three" /></div>
+
       {/* Sticky Top Header Navigation */}
       <Header
         currentTab={currentTab}

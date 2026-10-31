@@ -43,7 +43,6 @@ export default function Hero({ lang, t, soundEnabled, setCurrentTab }: HeroProps
 
   return (
     <section id="hero-section" className="editorial-hero page-width">
-      <div className="hero-ambient" aria-hidden="true"><span className="ambient-blob ambient-one" /><span className="ambient-blob ambient-two" /><span className="ambient-blob ambient-three" /></div>
       <div className="hero-composition">
         <motion.div className="hero-introduction" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: 'easeOut' }}>
           <img className="hero-avatar" src="/images/salman-fidinillah-profile.webp" alt="" width="88" height="88" fetchPriority="high" />
