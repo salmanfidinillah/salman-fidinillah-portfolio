@@ -55,10 +55,10 @@ export default function Footer({
       <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-8 md:space-y-12">
 
         {/* Top Info row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 text-left">
+        <div className="footer-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 text-left">
 
           {/* Column 1: Brand details (Always visible) */}
-          <div className="lg:col-span-4 space-y-4">
+          <div className="footer-brand-column lg:col-span-4 space-y-4">
             <div
               id="footer-brand"
               className="flex items-center gap-2 cursor-pointer group"
@@ -74,12 +74,13 @@ export default function Footer({
               </span>
             </div>
 
-            <p className="text-xs md:text-sm leading-relaxed max-w-xs">
+            <p className="footer-tagline text-xs md:text-sm leading-relaxed max-w-xs">
               {t.footerTagline}
             </p>
 
+            <a className="footer-mobile-email" href="mailto:salmansegaf52@gmail.com">salmansegaf52@gmail.com <span aria-hidden="true">↗</span></a>
             {/* Social row */}
-            <div className="flex items-center gap-2 pt-2">
+            <div className="footer-socials flex items-center gap-2 pt-2">
               <SocialLinks
                 links={SOCIAL_LINKS}
                 variant="footer"
@@ -90,7 +91,7 @@ export default function Footer({
           </div>
 
           {/* Column 2: Navigate links (Desktop only) */}
-          <div className="hidden md:block lg:col-span-2 space-y-4">
+          <div className="footer-secondary hidden md:block lg:col-span-2 space-y-4">
             <h4 className={`text-xs font-bold tracking-widest uppercase font-mono ${
               darkMode ? 'text-[var(--ink)]' : 'text-[var(--ink)]'
             }`}>
@@ -118,7 +119,7 @@ export default function Footer({
           </div>
 
           {/* Column 3: Contact (Desktop only) */}
-          <div className="hidden md:block lg:col-span-3 space-y-4">
+          <div className="footer-secondary hidden md:block lg:col-span-3 space-y-4">
             <h4 className={`text-xs font-bold tracking-widest uppercase font-mono ${
               darkMode ? 'text-[var(--ink)]' : 'text-[var(--ink)]'
             }`}>
@@ -148,7 +149,7 @@ export default function Footer({
           </div>
 
           {/* Column 4: Main stack summary (Desktop only) */}
-          <div className="hidden md:block lg:col-span-3 space-y-4">
+          <div className="footer-secondary hidden md:block lg:col-span-3 space-y-4">
             <h4 className={`text-xs font-bold tracking-widest uppercase font-mono ${
               darkMode ? 'text-[var(--ink)]' : 'text-[var(--ink)]'
             }`}>
@@ -167,9 +168,10 @@ export default function Footer({
         <div className={`pt-6 md:pt-8 border-t flex flex-wrap items-center justify-between gap-4 text-xs ${
           darkMode ? 'border-[var(--line)] text-[var(--muted)]' : 'border-[var(--line)] text-[var(--muted)]'
         }`}>
-          <span>
+          <span className="footer-copyright-desktop">
             © 2026 salmansegf · Salman Fidinillah · {t.footerCopyright}
           </span>
+          <span className="footer-copyright-mobile">© 2026 Salman Fidinillah</span>
 
         </div>
 

@@ -54,7 +54,7 @@ Periksa halaman berikut pada ukuran desktop, tablet, dan ponsel:
 - `/skills` — daftar keahlian;
 - `/projects` — empat proyek dan galeri masing-masing;
 - `/blog` — daftar artikel, gambar, pencarian, filter, dan detail artikel;
-- `/contact` — formulir, WhatsApp, serta tautan email;
+- `/contact` — formulir dan tautan email;
 - mode gelap/terang, pilihan bahasa, menu mobile, seluruh tombol eksternal, dan tombol kembali browser.
 
 Uji production build:

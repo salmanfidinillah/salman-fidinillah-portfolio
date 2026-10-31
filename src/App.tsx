@@ -297,13 +297,6 @@ export default function App() {
                       <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl animate-pulse" />
 
                       <div className="relative z-10 space-y-6">
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold uppercase ${
-                          darkMode ? 'bg-white/5 text-gray-400' : 'bg-black/5 text-gray-600'
-                        }`}>
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                          {lang === 'ID' ? 'Terbuka untuk pekerjaan' : 'Open for collaboration'}
-                        </span>
-
                         <h2 className={`font-display text-2xl md:text-4xl font-extrabold tracking-tight ${
                           darkMode ? 'text-white' : 'text-gray-900'
                         }`}>

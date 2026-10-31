@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, type CSSProperties } from 'react';
 import { motion } from 'motion/react';
 import { TranslationDict } from '../translations';
 import { SOCIAL_LINKS } from '../data';
@@ -58,7 +58,7 @@ export default function Hero({ lang, t, soundEnabled, setCurrentTab }: HeroProps
     } else if (cmd === 'skills') {
       reply = 'Frontend: React, Next.js, Vue, Svelte, TS. Backend: Node, Express, Nest, Go, Laravel, PHP.';
     } else if (cmd === 'contact') {
-      reply = 'salmansegaf52@gmail.com | WA: 087762342876';
+      reply = 'salmansegaf52@gmail.com';
     } else if (cmd === 'clear') {
       setTerminalHistory([]);
       setTerminalInput('');
@@ -91,9 +91,11 @@ export default function Hero({ lang, t, soundEnabled, setCurrentTab }: HeroProps
     <section id="hero-section" className="editorial-hero page-width">
       <div className="hero-composition">
         <motion.div className="hero-introduction" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: 'easeOut' }}>
-          <div id="status-badge" className="availability">{t.availableForWork}</div>
+          <img className="hero-avatar" src="/images/salman-fidinillah-profile.webp" alt="" width="88" height="88" fetchPriority="high" />
           <p className="hero-greeting">{lang === 'ID' ? 'Halo, Saya' : "Hello, I’m"}</p>
-          <h1 id="hero-headline">Salman<br />Fidinillah</h1>
+          <h1 id="hero-headline" aria-label="Salman Fidinillah">
+            {['Salman', 'Fidinillah'].map((word, wordIndex) => <span className="hero-name-word" key={word} aria-hidden="true">{[...word].map((letter, index) => <span className="name-character" key={index} style={{ '--letter-index': index + wordIndex * 6 } as CSSProperties}>{letter}</span>)}</span>)}
+          </h1>
           <p id="hero-tagline" className="hero-tagline">{t.heroTagline}</p>
           <div id="hero-ctas" className="hero-actions">
             <button id="cta-view-projects" className="ui-button ui-primary" onClick={() => { playSound(650, 0.08); setCurrentTab('projects'); }}>{t.viewProjects}</button>

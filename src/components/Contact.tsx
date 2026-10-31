@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Mail, MapPin, Clock, Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import { TranslationDict } from '../translations';
 import { SOCIAL_LINKS } from '../data';
 import { SocialLinks } from './SocialLinks';
@@ -15,7 +15,6 @@ interface ContactProps {
 export default function Contact({ lang, darkMode, t, soundEnabled }: ContactProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [whatsapp, setWhatsapp] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -58,7 +57,6 @@ export default function Contact({ lang, darkMode, t, soundEnabled }: ContactProp
       body: JSON.stringify({
         name,
         email,
-        whatsapp,
         message
       })
     })
@@ -71,7 +69,6 @@ export default function Contact({ lang, darkMode, t, soundEnabled }: ContactProp
         // Reset fields
         setName('');
         setEmail('');
-        setWhatsapp('');
         setMessage('');
       } else {
         setSubmissionStatus('error');
@@ -166,27 +163,6 @@ export default function Contact({ lang, darkMode, t, soundEnabled }: ContactProp
                   />
                 </div>
 
-                {/* WhatsApp optional field */}
-                <div className="space-y-2">
-                  <label htmlFor="form-whatsapp" className={`text-[10px] font-bold tracking-wider uppercase ${
-                    darkMode ? 'text-[var(--muted)]' : 'text-[var(--muted)]'
-                  }`}>
-                    {t.formWhatsapp}
-                  </label>
-                  <input
-                    type="tel"
-                    id="form-whatsapp"
-                    value={whatsapp}
-                    onChange={(e) => setWhatsapp(e.target.value)}
-                    placeholder="e.g. 087762342876"
-                    className={`w-full px-5 py-3.5 rounded-xl border text-sm font-medium outline-none transition-all ${
-                      darkMode
-                        ? 'bg-[var(--surface)] border-[var(--line)] focus:border-cyan-500/50 text-[var(--ink)]'
-                        : 'bg-[var(--surface)] border-[var(--line)] focus:border-indigo-600/50 text-[var(--ink)]'
-                    }`}
-                  />
-                </div>
-
                 {/* Message field */}
                 <div className="space-y-2">
                   <label htmlFor="form-message" className={`text-[10px] font-bold tracking-wider uppercase ${
@@ -223,7 +199,7 @@ export default function Contact({ lang, darkMode, t, soundEnabled }: ContactProp
                     <p className="text-xs font-bold leading-normal">
                       {!name.trim() || !email.trim() || !message.trim()
                         ? (lang === 'ID' ? 'Harap lengkapi semua kolom wajib!' : 'Please fill all required fields!')
-                        : (lang === 'ID' ? 'Pesan belum terkirim. Coba lagi atau hubungi saya melalui email atau WhatsApp.' : 'Your message could not be sent. Try again or contact me by email or WhatsApp.')}
+                        : (lang === 'ID' ? 'Pesan belum terkirim. Coba lagi atau hubungi saya melalui email.' : 'Your message could not be sent. Try again or contact me by email.')}
                     </p>
                   </div>
                 )}
@@ -287,27 +263,6 @@ export default function Contact({ lang, darkMode, t, soundEnabled }: ContactProp
                       darkMode ? 'text-[var(--ink)]' : 'text-[var(--ink)]'
                     }`}>
                       salmansegaf52@gmail.com
-                    </span>
-                  </div>
-                </a>
-
-                {/* WhatsApp block */}
-                <a
-                  href="https://wa.me/6287762342876"
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={() => playSound(650, 0.08)}
-                  className="flex items-center gap-4 group"
-                >
-                  <div className="w-12 h-12 rounded-2xl bg-[var(--accent)] text-[var(--accent-ink)] flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <Phone className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider block">WhatsApp</span>
-                    <span className={`text-sm font-bold group-hover:text-purple-400 transition-colors ${
-                      darkMode ? 'text-[var(--ink)]' : 'text-[var(--ink)]'
-                    }`}>
-                      087762342876
                     </span>
                   </div>
                 </a>

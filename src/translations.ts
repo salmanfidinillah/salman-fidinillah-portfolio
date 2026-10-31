@@ -1,5 +1,4 @@
 export interface TranslationDict {
-  availableForWork: string;
   heroTagline: string;
   roleTitle: string;
   locationTitle: string;
@@ -56,7 +55,6 @@ export interface TranslationDict {
   contactSubtitle: string;
   formName: string;
   formEmail: string;
-  formWhatsapp: string;
   formMessage: string;
   formMessagePlaceholder: string;
   formSend: string;
@@ -85,7 +83,6 @@ export interface TranslationDict {
 
 export const TRANSLATIONS: Record<'ID' | 'EN', TranslationDict> = {
   ID: {
-    availableForWork: '🟢 TERSEDIA UNTUK PROYEK BARU',
     heroTagline: 'Merancang & membangun pengalaman web modern, responsif, dan scalable melalui kode yang rapi, desain yang terarah, serta performa yang andal.',
     roleTitle: 'Fullstack Developer',
     locationTitle: 'Berbasis di Indonesia',
@@ -154,7 +151,6 @@ export const TRANSLATIONS: Record<'ID' | 'EN', TranslationDict> = {
     contactSubtitle: 'Punya proyek? Kirim pesan - saya akan segera membalasnya secepat mungkin.',
     formName: 'NAMA ANDA',
     formEmail: 'ALAMAT EMAIL',
-    formWhatsapp: 'NOMOR WHATSAPP (OPSIONAL)',
     formMessage: 'CERITAKAN TENTANG PROYEK ANDA',
     formMessagePlaceholder: 'Halo Salman, saya memiliki ide proyek menarik mengenai...',
     formSend: 'Kirim pesan',
@@ -181,7 +177,6 @@ export const TRANSLATIONS: Record<'ID' | 'EN', TranslationDict> = {
     noArticles: 'Tidak ada artikel yang cocok dengan pencarian Anda.'
   },
   EN: {
-    availableForWork: '🟢 AVAILABLE FOR NEW PROJECTS',
     heroTagline: 'Designing & building modern, responsive, and scalable web experiences through clean code, structured design, and reliable performance.',
     roleTitle: 'Fullstack Developer',
     locationTitle: 'Based in Indonesia',
@@ -250,7 +245,6 @@ export const TRANSLATIONS: Record<'ID' | 'EN', TranslationDict> = {
     contactSubtitle: 'Got a project or an idea? Send a message - I will get back to you as soon as possible.',
     formName: 'YOUR NAME',
     formEmail: 'EMAIL ADDRESS',
-    formWhatsapp: 'WHATSAPP NUMBER (OPTIONAL)',
     formMessage: 'TELL ME ABOUT YOUR PROJECT',
     formMessagePlaceholder: 'Hi Salman, I have an interesting project idea about...',
     formSend: 'Send Message',
