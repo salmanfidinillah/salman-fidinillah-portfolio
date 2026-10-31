@@ -80,4 +80,13 @@ File `public/_redirects` sudah disiapkan agar route aplikasi tetap dapat dibuka 
 
 ## SEO
 
-Metadata, canonical URL, Open Graph, Twitter Card, JSON-LD, `robots.txt`, dan `sitemap.xml` sudah tersedia. Jika domain deployment berbeda dari `salmanbuilds.web.id`, ubah domain tersebut pada `index.html`, `src/App.tsx`, `src/components/Blog.tsx`, `public/robots.txt`, dan `public/sitemap.xml` sebelum mendaftarkan website ke Google Search Console.
+Metadata, canonical URL, Open Graph, Twitter Card, JSON-LD, `robots.txt`, dan `sitemap.xml` sudah tersedia. Jika domain deployment berbeda dari `portfo.salmanbuilds.web.id`, ubah domain tersebut pada `index.html`, `src/App.tsx`, `src/components/Blog.tsx`, `public/robots.txt`, dan `public/sitemap.xml` sebelum mendaftarkan website ke Google Search Console.
+
+## SEO dan Google Search Console
+
+Alamat kanonis: https://portfo.salmanbuilds.web.id/. Build menghasilkan HTML lengkap dan metadata unik untuk beranda, pengalaman, keahlian, proyek, kontak, blog, tiga artikel, dan empat detail proyek. Sitemap dibuat ulang dari daftar route saat build.
+
+- File verifikasi Google berada di `public/google95d24d8d3cf5329d.html`. Pertahankan file ini setelah verifikasi berhasil.
+- Masukkan `sitemap.xml` di menu Sitemaps pada properti URL-prefix domain di atas.
+- Konfigurasi metadata, identitas Person, dan daftar route ada di `src/seo.ts`.
+- Tampilan interaktif tetap menggunakan React; isi utama sudah tersedia pada HTML awal untuk mesin pencari dan pengunjung tanpa JavaScript.

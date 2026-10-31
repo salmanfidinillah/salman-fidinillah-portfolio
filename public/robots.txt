@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://salmanbuilds.web.id/sitemap.xml
+Sitemap: https://portfo.salmanbuilds.web.id/sitemap.xml

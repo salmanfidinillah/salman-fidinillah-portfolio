@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence, MotionConfig } from 'motion/react';
 import { TRANSLATIONS } from './translations';
 import { Project } from './types';
+import { applyPageSEO, getPageSEO, getProjectPath, resolveRoute } from './seo';
 
 // Import components
 import Header from './components/Header';
@@ -17,29 +18,11 @@ const ProjectDetail = lazy(() => import('./components/ProjectDetail'));
 const Contact = lazy(() => import('./components/Contact'));
 const Blog = lazy(() => import('./components/Blog'));
 
-const SITE_URL = 'https://salmanbuilds.web.id';
-const DEFAULT_SEO_IMAGE = `${SITE_URL}/images/salman-fidinillah-developer-blog-cover.webp`;
-
-export default function App() {
-  const [currentTab, setCurrentTab] = useState<string>(() => {
-    const path = window.location.pathname;
-    if (path.startsWith('/blog')) {
-      return 'blog';
-    }
-    const tab = path.substring(1);
-    const validTabs = ['home', 'journey', 'skills', 'projects', 'contact'];
-    return validTabs.includes(tab) ? tab : 'home';
-  });
-
-  const [activePostSlug, setActivePostSlug] = useState<string | null>(() => {
-    const path = window.location.pathname;
-    if (path.startsWith('/blog/')) {
-      return path.substring(6).replace(/\/$/, '');
-    }
-    return null;
-  });
-
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+export default function App({ initialPath = typeof window === 'undefined' ? '/' : window.location.pathname }: { initialPath?: string } = {}) {
+  const initialRoute = resolveRoute(initialPath);
+  const [currentTab, setCurrentTab] = useState(initialRoute.tab);
+  const [activePostSlug, setActivePostSlug] = useState<string | null>(initialRoute.postSlug);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(initialRoute.project);
   const [lang, setLang] = useState<'ID' | 'EN'>('ID');
   const [darkMode, setDarkMode] = useState<boolean>(() => { try { return localStorage.getItem('portfolio-theme') === 'dark'; } catch { return false; } });
   const [soundEnabled] = useState<boolean>(true);
@@ -47,21 +30,10 @@ export default function App() {
   // Sync state when popstate changes (browser back/forward button clicks)
   useEffect(() => {
     const handlePopState = () => {
-      const path = window.location.pathname;
-      if (path.startsWith('/blog')) {
-        setCurrentTab('blog');
-        if (path.startsWith('/blog/')) {
-          setActivePostSlug(path.substring(6).replace(/\/$/, ''));
-        } else {
-          setActivePostSlug(null);
-        }
-      } else {
-        const tab = path.substring(1);
-        const validTabs = ['home', 'journey', 'skills', 'projects', 'contact'];
-        setCurrentTab(validTabs.includes(tab) ? tab : 'home');
-        setActivePostSlug(null);
-      }
-      setSelectedProject(null);
+      const route = resolveRoute(window.location.pathname);
+      setCurrentTab(route.tab);
+      setActivePostSlug(route.postSlug);
+      setSelectedProject(route.project);
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -106,102 +78,19 @@ export default function App() {
   // Handle language change side-effects
   const t = TRANSLATIONS[lang];
 
-  // Keep page identity and share previews accurate on every portfolio route.
+  // The same metadata source is used for initial HTML and client-side navigation.
   useEffect(() => {
     if (currentTab === 'blog') return;
-
-    const seoByTab: Record<string, { titleID: string; titleEN: string; descriptionID: string; descriptionEN: string; path: string }> = {
-      home: {
-        titleID: 'Salman Fidinillah | Fullstack Developer Indonesia',
-        titleEN: 'Salman Fidinillah | Fullstack Developer Indonesia',
-        descriptionID: 'Portofolio Salman Fidinillah, Fullstack Developer Indonesia di bidang web, AI, dan cybersecurity. Lihat proyek, pengalaman, sertifikat, dan blog.',
-        descriptionEN: 'Portfolio of Salman Fidinillah, an Indonesian Fullstack Developer focused on web development, AI, and cybersecurity.',
-        path: '/'
-      },
-      journey: {
-        titleID: 'Perjalanan Salman Fidinillah | Pendidikan & Pengalaman',
-        titleEN: 'Salman Fidinillah Journey | Education & Experience',
-        descriptionID: 'Perjalanan pendidikan, pelatihan, pengalaman, dan sertifikasi Salman Fidinillah sebagai Fullstack Developer Indonesia.',
-        descriptionEN: 'Education, training, experience, and certifications of Salman Fidinillah as an Indonesian Fullstack Developer.',
-        path: '/journey'
-      },
-      skills: {
-        titleID: 'Keahlian Salman Fidinillah | Web, AI & Cloud',
-        titleEN: 'Salman Fidinillah Skills | Web, AI & Cloud',
-        descriptionID: 'Keahlian Salman Fidinillah dalam web development, TypeScript, React, artificial intelligence, cloud computing, dan cybersecurity.',
-        descriptionEN: 'Salman Fidinillah skills in web development, TypeScript, React, artificial intelligence, cloud computing, and cybersecurity.',
-        path: '/skills'
-      },
-      projects: {
-        titleID: 'Proyek Salman Fidinillah | Fullstack Developer Portfolio',
-        titleEN: 'Salman Fidinillah Projects | Fullstack Developer Portfolio',
-        descriptionID: 'Kumpulan proyek Salman Fidinillah, termasuk Cyber Academy AI, InvitaLab, Kangen Haramain, dan ScanMed AI.',
-        descriptionEN: 'Projects by Salman Fidinillah, including Cyber Academy AI, InvitaLab, Kangen Haramain, and ScanMed AI.',
-        path: '/projects'
-      },
-      contact: {
-        titleID: 'Hubungi Salman Fidinillah | Fullstack Developer',
-        titleEN: 'Contact Salman Fidinillah | Fullstack Developer',
-        descriptionID: 'Hubungi Salman Fidinillah untuk kolaborasi web development, aplikasi AI, cybersecurity, atau pengembangan produk digital.',
-        descriptionEN: 'Contact Salman Fidinillah for web development, AI applications, cybersecurity, or digital product collaboration.',
-        path: '/contact'
-      }
-    };
-
-    const currentSEO = seoByTab[currentTab] || seoByTab.home;
-    const title = selectedProject
-      ? `${selectedProject.title} | Proyek Salman Fidinillah`
-      : lang === 'ID' ? currentSEO.titleID : currentSEO.titleEN;
-    const description = selectedProject
-      ? selectedProject.description
-      : lang === 'ID' ? currentSEO.descriptionID : currentSEO.descriptionEN;
-    const pagePath = selectedProject ? '/projects' : currentSEO.path;
-    const pageUrl = `${SITE_URL}${pagePath}`;
-    const image = selectedProject
-      ? selectedProject.image.startsWith('http') ? selectedProject.image : `${SITE_URL}${selectedProject.image}`
-      : DEFAULT_SEO_IMAGE;
-
-    document.title = title;
-
-    const setMeta = (attribute: 'name' | 'property', key: string, content: string) => {
-      let element = document.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`);
-      if (!element) {
-        element = document.createElement('meta');
-        element.setAttribute(attribute, key);
-        document.head.appendChild(element);
-      }
-      element.content = content;
-    };
-
-    setMeta('name', 'description', description);
-    setMeta('name', 'robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-    setMeta('property', 'og:type', 'website');
-    setMeta('property', 'og:locale', lang === 'ID' ? 'id_ID' : 'en_US');
-    setMeta('property', 'og:site_name', 'Portfolio Salman Fidinillah');
-    setMeta('property', 'og:title', title);
-    setMeta('property', 'og:description', description);
-    setMeta('property', 'og:url', pageUrl);
-    setMeta('property', 'og:image', image);
-    setMeta('property', 'og:image:alt', title);
-    setMeta('name', 'twitter:card', 'summary_large_image');
-    setMeta('name', 'twitter:title', title);
-    setMeta('name', 'twitter:description', description);
-    setMeta('name', 'twitter:image', image);
-    setMeta('name', 'twitter:image:alt', title);
-
-    let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-    if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.rel = 'canonical';
-      document.head.appendChild(canonical);
-    }
-    canonical.href = pageUrl;
-
-    document.getElementById('blog-structured-data')?.remove();
+    const path = selectedProject ? getProjectPath(selectedProject.id) : currentTab === 'home' ? '/' : `/${currentTab}`;
+    applyPageSEO(getPageSEO(path, lang));
   }, [currentTab, selectedProject, lang]);
 
   const handleSelectProject = (project: Project) => {
     setSelectedProject(project);
+    setCurrentTab('projects');
+    setActivePostSlug(null);
+    const path = getProjectPath(project.id);
+    if (window.location.pathname !== path) window.history.pushState({}, '', path);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -230,7 +119,7 @@ export default function App() {
       {/* Main Page Content Dynamic Portal */}
       <main id="portfolio-main-viewport" tabIndex={-1} className="flex-grow">
 
-        <Suspense fallback={<div className="page-width editorial-page" role="status">{lang === 'ID' ? 'Memuat halaman…' : 'Loading page…'}</div>}><AnimatePresence mode="wait">
+        <Suspense fallback={<div className="page-width editorial-page" role="status">{lang === 'ID' ? 'Memuat halaman…' : 'Loading page…'}</div>}><AnimatePresence mode="wait" initial={false}>
 
           {selectedProject ? (
             /* PROJECT DETAIL VIEW SCREEN */

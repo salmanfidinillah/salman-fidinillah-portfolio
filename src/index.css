@@ -83,7 +83,7 @@ button,input,textarea,select { font:inherit; }
 .projects-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
 .project-card { border:1px solid var(--line); border-radius:20px; padding:16px; background:var(--surface); display:flex; flex-direction:column; gap:16px; transition:transform .2s,box-shadow .2s; min-width:0; }
 .project-card:hover { transform:translateY(-4px); box-shadow:3px 5px 0 var(--accent); }
-.project-image-button { width:100%; height:230px; overflow:hidden; border-radius:12px; padding:0; background:var(--paper); }
+.project-image-button { display:block; width:100%; height:230px; overflow:hidden; border-radius:12px; padding:0; background:var(--paper); }
 .project-image-button img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .4s; }
 .project-card:hover .project-image-button img { transform:scale(1.025); }
 .project-card h3 { font:700 27px/1.2 var(--font-display); margin:0; letter-spacing:-.025em; }
@@ -140,7 +140,7 @@ button,input,textarea,select { font:inherit; }
 :is(#journey-section,#contact-section,#portfolio-footer)>div { width:min(1280px,calc(100% - 112px)); padding-inline:0; }
 :is(#journey-section,#contact-section)>div>div:first-child { text-align:left; margin-bottom:48px; }
 :is(#journey-section,#contact-section)>div>div:first-child>p { margin-inline:0; max-width:760px; font-size:16px; line-height:1.8; }
-:is(#journey-section,#contact-section)>div>div:first-child h2 { font-size:clamp(36px,4vw,56px); line-height:1.12; letter-spacing:-.045em; }
+:is(#journey-section,#contact-section)>div>div:first-child :is(h1,h2) { font-size:clamp(36px,4vw,56px); line-height:1.12; letter-spacing:-.045em; }
 :is(#journey-section,#contact-section)>div>div:first-child>div { background:none; color:var(--accent-ink); padding:0; font:11px/1.8 var(--font-mono); }
 :is(#journey-section,#contact-section) :is(.blur-2xl,.blur-3xl,.blur-xl) { display:none; }
 :is(#journey-section,#contact-section) .rounded-3xl { border-radius:20px; }

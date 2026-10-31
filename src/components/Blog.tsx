@@ -4,13 +4,9 @@ import { motion, AnimatePresence } from 'motion/react';
 import { BLOG_POSTS } from '../data/blog';
 import { TranslationDict } from '../translations';
 
-const SITE_URL = 'https://salmanbuilds.web.id';
+import { applyPageSEO, getPageSEO, SITE_URL } from '../seo';
 const DEFAULT_BLOG_IMAGE = '/images/salman-fidinillah-developer-blog-cover.webp';
 
-const toAbsoluteUrl = (url: string) => {
-  if (url.startsWith('http://') || url.startsWith('https://')) return url;
-  return `${SITE_URL}${url.startsWith('/') ? url : `/${url}`}`;
-};
 
 interface BlogProps {
   lang: 'ID' | 'EN';
@@ -104,124 +100,14 @@ export default function Blog({
     return BLOG_POSTS.find(post => post.slug === activePostSlug) || null;
   }, [activePostSlug]);
 
-  // Dynamic SEO implementation based on active article
   useEffect(() => {
-    if (activeArticle) {
-      const title = lang === 'ID'
-        ? (activeArticle.metaTitleID || activeArticle.titleID)
-        : (activeArticle.metaTitleEN || activeArticle.titleEN);
-      const desc = lang === 'ID'
-        ? (activeArticle.metaDescriptionID || activeArticle.summaryID)
-        : (activeArticle.metaDescriptionEN || activeArticle.summaryEN);
-
-      updateSEO(title, desc, activeArticle.thumbnail, activeArticle.slug);
-    } else {
-      const title = lang === 'ID'
-        ? 'Blog Salman Fidinillah | Web, AI & Cybersecurity'
-        : 'Salman Fidinillah Blog | Web, AI & Cybersecurity';
-      const desc = lang === 'ID'
-        ? 'Artikel Salman Fidinillah tentang web development, artificial intelligence, cybersecurity, proses belajar, dan pengalaman membangun proyek teknologi.'
-        : 'Articles by Salman Fidinillah about web development, artificial intelligence, cybersecurity, learning, and building technology projects.';
-      updateSEO(title, desc, DEFAULT_BLOG_IMAGE);
-    }
-  }, [activeArticle, lang, t.blogSubtitle]);
+    applyPageSEO(getPageSEO(activeArticle ? `/blog/${activeArticle.slug}` : '/blog', lang));
+  }, [activeArticle, lang]);
 
   // Scroll to top when view changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activePostSlug]);
-
-  const updateSEO = (title: string, desc: string, ogImage: string, slug?: string) => {
-    document.title = title;
-    const pageUrl = `${SITE_URL}/blog${slug ? `/${slug}` : ''}`;
-    const absoluteImage = toAbsoluteUrl(ogImage);
-
-    const getOrCreateMeta = (nameAttr: string, valueAttr: string, content: string) => {
-      let el = document.querySelector(`meta[${nameAttr}="${valueAttr}"]`);
-      if (!el) {
-        el = document.createElement('meta');
-        el.setAttribute(nameAttr, valueAttr);
-        document.head.appendChild(el);
-      }
-      el.setAttribute('content', content);
-    };
-
-    // Standard SEO Meta Tags
-    getOrCreateMeta('name', 'description', desc);
-    getOrCreateMeta('name', 'robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-
-    // Open Graph / Facebook Meta Tags
-    getOrCreateMeta('property', 'og:title', title);
-    getOrCreateMeta('property', 'og:description', desc);
-    getOrCreateMeta('property', 'og:image', absoluteImage);
-    getOrCreateMeta('property', 'og:image:alt', title);
-    getOrCreateMeta('property', 'og:url', pageUrl);
-    getOrCreateMeta('property', 'og:type', slug ? 'article' : 'website');
-    getOrCreateMeta('property', 'og:site_name', 'Portfolio Salman Fidinillah');
-    getOrCreateMeta('property', 'og:locale', lang === 'ID' ? 'id_ID' : 'en_US');
-
-    // Twitter Meta Tags
-    getOrCreateMeta('name', 'twitter:card', 'summary_large_image');
-    getOrCreateMeta('name', 'twitter:title', title);
-    getOrCreateMeta('name', 'twitter:description', desc);
-    getOrCreateMeta('name', 'twitter:image', absoluteImage);
-    getOrCreateMeta('name', 'twitter:image:alt', title);
-
-    let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-    if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.rel = 'canonical';
-      document.head.appendChild(canonical);
-    }
-    canonical.href = pageUrl;
-
-    // Structured Data Inject (JSON-LD)
-    let scriptEl = document.getElementById('blog-structured-data');
-    if (scriptEl) {
-      scriptEl.remove();
-    }
-
-    const structuredData = slug && activeArticle
-      ? {
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          "headline": title,
-          "description": desc,
-          "image": [absoluteImage],
-          "url": pageUrl,
-          "mainEntityOfPage": pageUrl,
-          "datePublished": activeArticle.date + "T08:00:00+07:00",
-          "dateModified": activeArticle.date + "T08:00:00+07:00",
-          "author": [{
-              "@type": "Person",
-              "name": activeArticle.author?.name || "Salman",
-              "jobTitle": activeArticle.author?.role || "Fullstack Developer",
-              "url": `${SITE_URL}/`
-            }],
-          "publisher": {
-            "@type": "Person",
-            "name": "Salman Fidinillah",
-            "url": `${SITE_URL}/`
-          }
-        }
-      : {
-          "@context": "https://schema.org",
-          "@type": "WebPage",
-          "name": title,
-          "description": desc,
-          "publisher": {
-            "@type": "Person",
-            "name": "Salman Fidinillah",
-            "url": `${SITE_URL}/`
-          }
-        };
-
-    scriptEl = document.createElement('script');
-    scriptEl.id = 'blog-structured-data';
-    scriptEl.setAttribute('type', 'application/ld+json');
-    scriptEl.textContent = JSON.stringify(structuredData);
-    document.head.appendChild(scriptEl);
-  };
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement>) => {
     const image = event.currentTarget;
@@ -232,7 +118,7 @@ export default function Blog({
   const handleShare = (e: MouseEvent, slug: string) => {
     e.stopPropagation();
     playClickSound();
-    const url = `${window.location.origin}/blog/${slug}`;
+    const url = `${SITE_URL}/blog/${slug}`;
     navigator.clipboard.writeText(url).then(() => {
       setCopiedSlug(slug);
       setTimeout(() => setCopiedSlug(null), 2000);
@@ -398,7 +284,7 @@ export default function Blog({
 
       <div className="max-w-6xl mx-auto relative z-10">
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           {!activeArticle ? (
             /* BLOG LIST VIEW */
             <motion.div
@@ -576,7 +462,11 @@ export default function Blog({
                             <h3 className={`text-base md:text-lg font-bold tracking-tight leading-snug group-hover:text-cyan-400 transition-colors duration-300 text-left ${
                               darkMode ? 'text-[var(--ink)]' : 'text-[var(--ink)]'
                             }`}>
-                              {title}
+                              <a href={`/blog/${post.slug}`} onClick={event => {
+                                event.stopPropagation();
+                                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                                event.preventDefault(); playClickSound(); setActivePostSlug(post.slug);
+                              }}>{title}</a>
                             </h3>
 
                             {/* Summary */}
@@ -607,7 +497,7 @@ export default function Blog({
                                   : 'border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-indigo-600 hover:bg-indigo-50'
                               }`}
                             >
-                              <AnimatePresence mode="wait">
+                              <AnimatePresence mode="wait" initial={false}>
                                 {copiedSlug === post.slug ? (
                                   <motion.div
                                     key="check"
@@ -737,7 +627,7 @@ export default function Blog({
                           : 'border-[var(--line)] bg-[var(--surface)] hover:border-indigo-600/20 text-[var(--muted)] hover:text-black'
                       }`}
                     >
-                      <AnimatePresence mode="wait">
+                      <AnimatePresence mode="wait" initial={false}>
                         {copiedSlug === activeArticle.slug ? (
                           <motion.span
                             key="copied"

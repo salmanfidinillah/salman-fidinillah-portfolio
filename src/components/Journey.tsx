@@ -119,11 +119,11 @@ export default function Journey({ lang, darkMode, t, soundEnabled }: JourneyProp
           }`}>
             {lang === 'ID' ? 'Perjalanan Karier' : 'My Road'}
           </div>
-          <h2 className={`font-display text-3xl md:text-5xl font-extrabold tracking-tight ${
+          <h1 className={`font-display text-3xl md:text-5xl font-extrabold tracking-tight ${
             darkMode ? 'text-[var(--ink)]' : 'text-[var(--ink)]'
           }`}>
             {lang === 'ID' ? 'Pengalaman & ' : 'Journey & '}<span className="   text-[var(--ink)]">Perjalanan</span>
-          </h2>
+          </h1>
           <p className={`text-sm md:text-base max-w-xl mx-auto ${
             darkMode ? 'text-[var(--muted)]' : 'text-[var(--muted)]'
           }`}>

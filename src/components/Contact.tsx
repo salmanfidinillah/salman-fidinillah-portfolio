@@ -96,11 +96,11 @@ export default function Contact({ lang, darkMode, t, soundEnabled }: ContactProp
           }`}>
             {lang === 'ID' ? 'Koneksi Kerja' : 'Let\'s Connect'}
           </div>
-          <h2 className={`font-display text-3xl md:text-5xl font-extrabold tracking-tight ${
+          <h1 className={`font-display text-3xl md:text-5xl font-extrabold tracking-tight ${
             darkMode ? 'text-[var(--ink)]' : 'text-[var(--ink)]'
           }`}>
             {lang === 'ID' ? 'Mari ' : 'Let’s '}<span className="   text-[var(--ink)]">{lang === 'ID' ? 'bangun sesuatu yang hebat' : 'build something amazing'}</span>
-          </h2>
+          </h1>
           <p className={`text-sm md:text-base max-w-xl mx-auto ${
             darkMode ? 'text-[var(--muted)]' : 'text-[var(--muted)]'
           }`}>
