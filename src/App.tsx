@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { useState, useEffect, lazy, Suspense } from 'react';
+import { motion, AnimatePresence, MotionConfig } from 'motion/react';
 import { TRANSLATIONS } from './translations';
 import { Project } from './types';
 
@@ -8,13 +8,14 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import AboutServices from './components/AboutServices';
 import FeaturedProjects from './components/FeaturedProjects';
-import Journey from './components/Journey';
-import Toolbox from './components/Toolbox';
-import Projects from './components/Projects';
-import ProjectDetail from './components/ProjectDetail';
-import Contact from './components/Contact';
 import Footer from './components/Footer';
-import Blog from './components/Blog';
+
+const Journey = lazy(() => import('./components/Journey'));
+const Toolbox = lazy(() => import('./components/Toolbox'));
+const Projects = lazy(() => import('./components/Projects'));
+const ProjectDetail = lazy(() => import('./components/ProjectDetail'));
+const Contact = lazy(() => import('./components/Contact'));
+const Blog = lazy(() => import('./components/Blog'));
 
 const SITE_URL = 'https://salmanbuilds.web.id';
 const DEFAULT_SEO_IMAGE = `${SITE_URL}/images/salman-fidinillah-developer-blog-cover.webp`;
@@ -29,7 +30,7 @@ export default function App() {
     const validTabs = ['home', 'journey', 'skills', 'projects', 'contact'];
     return validTabs.includes(tab) ? tab : 'home';
   });
-  
+
   const [activePostSlug, setActivePostSlug] = useState<string | null>(() => {
     const path = window.location.pathname;
     if (path.startsWith('/blog/')) {
@@ -40,7 +41,7 @@ export default function App() {
 
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [lang, setLang] = useState<'ID' | 'EN'>('ID');
-  const [darkMode, setDarkMode] = useState<boolean>(true);
+  const [darkMode, setDarkMode] = useState<boolean>(() => { try { return localStorage.getItem('portfolio-theme') === 'dark'; } catch { return false; } });
   const [soundEnabled] = useState<boolean>(true);
 
   // Sync state when popstate changes (browser back/forward button clicks)
@@ -71,7 +72,7 @@ export default function App() {
     setSelectedProject(null);
     setCurrentTab(tab);
     setActivePostSlug(null);
-    
+
     const newPath = tab === 'home' ? '/' : `/${tab}`;
     if (window.location.pathname !== newPath) {
       window.history.pushState({}, '', newPath);
@@ -93,12 +94,13 @@ export default function App() {
     if (darkMode) {
       root.classList.add('dark');
       root.classList.remove('light');
-      body.className = 'bg-[#05050a] text-white selection:bg-cyan-500 selection:text-black transition-colors duration-300';
+      body.className = 'editorial-body';
     } else {
       root.classList.add('light');
       root.classList.remove('dark');
-      body.className = 'bg-slate-50 text-gray-900 selection:bg-indigo-600 selection:text-white transition-colors duration-300';
+      body.className = 'editorial-body';
     }
+    try { localStorage.setItem('portfolio-theme', darkMode ? 'dark' : 'light'); } catch { /* Storage may be unavailable in private browsing. */ }
   }, [darkMode]);
 
   // Handle language change side-effects
@@ -205,13 +207,13 @@ export default function App() {
 
   const handleBackToProjects = () => {
     setSelectedProject(null);
-    setCurrentTab('projects');
+    navigateToTab('projects');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div id="portfolio-app-root" className="min-h-screen flex flex-col justify-between font-sans relative overflow-x-hidden">
-      
+    <MotionConfig reducedMotion="user"><a className="skip-link" href="#portfolio-main-viewport">{lang === 'ID' ? 'Langsung ke konten' : 'Skip to content'}</a><div id="portfolio-app-root" className="editorial-app min-h-screen flex flex-col justify-between font-sans relative">
+
       {/* Sticky Top Header Navigation */}
       <Header
         currentTab={currentTab}
@@ -224,10 +226,10 @@ export default function App() {
       />
 
       {/* Main Page Content Dynamic Portal */}
-      <main id="portfolio-main-viewport" className="flex-grow">
-        
-        <AnimatePresence mode="wait">
-          
+      <main id="portfolio-main-viewport" tabIndex={-1} className="flex-grow">
+
+        <Suspense fallback={<div className="page-width editorial-page" role="status">{lang === 'ID' ? 'Memuat halaman…' : 'Loading page…'}</div>}><AnimatePresence mode="wait">
+
           {selectedProject ? (
             /* PROJECT DETAIL VIEW SCREEN */
             <motion.div
@@ -254,25 +256,25 @@ export default function App() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
             >
-              
+
               {currentTab === 'home' && (
-                <div id="tab-home-container" className="space-y-4">
-                  
+                <div id="tab-home-container" className="home-content">
+
                   {/* Hero landing section */}
-                  <Hero 
-                    lang={lang} 
-                    darkMode={darkMode} 
-                    t={t} 
+                  <Hero
+                    lang={lang}
+                    darkMode={darkMode}
+                    t={t}
                     soundEnabled={soundEnabled}
-                    setCurrentTab={setCurrentTab}
+                    setCurrentTab={navigateToTab}
                   />
 
                   {/* About with dynamic 3D ID Card & Services Grid */}
-                  <AboutServices 
-                    lang={lang} 
-                    darkMode={darkMode} 
-                    t={t} 
-                    soundEnabled={soundEnabled} 
+                  <AboutServices
+                    lang={lang}
+                    darkMode={darkMode}
+                    t={t}
+                    soundEnabled={soundEnabled}
                   />
 
                   {/* 3 Selected Works (Featured Projects) */}
@@ -281,19 +283,19 @@ export default function App() {
                     lang={lang}
                     darkMode={darkMode}
                     soundEnabled={soundEnabled}
-                    setCurrentTab={setCurrentTab}
+                    setCurrentTab={navigateToTab}
                   />
 
                   {/* High Fidelity Call To Action banner */}
-                  <section className="py-16 px-4 md:px-8 bg-grid-pattern">
+                  <section className="collaboration-section">
                     <div className={`max-w-5xl mx-auto p-6 sm:p-8 md:p-12 rounded-3xl border relative overflow-hidden text-center ${
-                      darkMode 
-                        ? 'bg-[#0c0c12]/60 border-white/5 shadow-2xl shadow-purple-500/5' 
+                      darkMode
+                        ? 'bg-[#0c0c12]/60 border-white/5 shadow-2xl shadow-purple-500/5'
                         : 'bg-white border-black/5 shadow-xl'
                     }`}>
                       <div className="absolute -top-12 -right-12 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl animate-pulse" />
                       <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl animate-pulse" />
-                      
+
                       <div className="relative z-10 space-y-6">
                         <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold uppercase ${
                           darkMode ? 'bg-white/5 text-gray-400' : 'bg-black/5 text-gray-600'
@@ -301,7 +303,7 @@ export default function App() {
                           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                           {lang === 'ID' ? 'Terbuka untuk pekerjaan' : 'Open for collaboration'}
                         </span>
-                        
+
                         <h2 className={`font-display text-2xl md:text-4xl font-extrabold tracking-tight ${
                           darkMode ? 'text-white' : 'text-gray-900'
                         }`}>
@@ -335,14 +337,14 @@ export default function App() {
                                   osc.stop(ctx.currentTime + 0.1);
                                 } catch (e) {}
                               }
-                              setCurrentTab('contact');
+                              navigateToTab('contact');
                               window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
                             className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 text-white font-bold text-xs shadow-md shadow-cyan-500/10 hover:shadow-cyan-500/20 hover:-translate-y-0.5 transition-all cursor-pointer"
                           >
                             {lang === 'ID' ? 'Hubungi Saya →' : 'Contact Me →'}
                           </button>
-                          
+
                           <button
                             onClick={() => {
                               if (soundEnabled) {
@@ -360,12 +362,12 @@ export default function App() {
                                   osc.stop(ctx.currentTime + 0.1);
                                 } catch (e) {}
                               }
-                              setCurrentTab('projects');
+                              navigateToTab('projects');
                               window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
                             className={`px-6 py-3.5 rounded-xl border font-bold text-xs transition-all hover:-translate-y-0.5 cursor-pointer ${
-                              darkMode 
-                                ? 'border-white/10 hover:border-white/20 hover:bg-white/5 text-white bg-white/5' 
+                              darkMode
+                                ? 'border-white/10 hover:border-white/20 hover:bg-white/5 text-white bg-white/5'
                                 : 'border-black/10 hover:border-black/20 hover:bg-gray-50 text-gray-800 bg-gray-50'
                             }`}
                           >
@@ -380,20 +382,20 @@ export default function App() {
               )}
 
               {currentTab === 'journey' && (
-                <Journey 
-                  lang={lang} 
-                  darkMode={darkMode} 
-                  t={t} 
-                  soundEnabled={soundEnabled} 
+                <Journey
+                  lang={lang}
+                  darkMode={darkMode}
+                  t={t}
+                  soundEnabled={soundEnabled}
                 />
               )}
 
               {currentTab === 'skills' && (
-                <Toolbox 
-                  lang={lang} 
-                  darkMode={darkMode} 
-                  t={t} 
-                  soundEnabled={soundEnabled} 
+                <Toolbox
+                  lang={lang}
+                  darkMode={darkMode}
+                  t={t}
+                  soundEnabled={soundEnabled}
                 />
               )}
 
@@ -408,11 +410,11 @@ export default function App() {
               )}
 
               {currentTab === 'contact' && (
-                <Contact 
-                  lang={lang} 
-                  darkMode={darkMode} 
-                  t={t} 
-                  soundEnabled={soundEnabled} 
+                <Contact
+                  lang={lang}
+                  darkMode={darkMode}
+                  t={t}
+                  soundEnabled={soundEnabled}
                 />
               )}
 
@@ -430,7 +432,7 @@ export default function App() {
             </motion.div>
           )}
 
-        </AnimatePresence>
+        </AnimatePresence></Suspense>
 
       </main>
 
@@ -443,6 +445,6 @@ export default function App() {
         soundEnabled={soundEnabled}
       />
 
-    </div>
+    </div></MotionConfig>
   );
 }

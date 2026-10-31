@@ -10,6 +10,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "lottie-web": "^5.13.0",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
     "react": "^19.0.1",
@@ -17,6 +18,8 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.14",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^5.0.4",
     "tailwindcss": "^4.1.14",
     "typescript": "~5.8.2",

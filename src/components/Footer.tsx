@@ -47,43 +47,43 @@ export default function Footer({
     <footer
       id="portfolio-footer"
       className={`border-t py-8 md:py-16 ${
-        darkMode 
-          ? 'bg-[#08080c]/50 border-white/5 text-gray-400' 
-          : 'bg-gray-50 border-black/5 text-gray-600'
+        darkMode
+          ? 'bg-[var(--surface)] border-[var(--line)] text-[var(--muted)]'
+          : 'bg-[var(--surface)] border-[var(--line)] text-[var(--muted)]'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-8 md:space-y-12">
-        
+
         {/* Top Info row */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 text-left">
-          
+
           {/* Column 1: Brand details (Always visible) */}
           <div className="lg:col-span-4 space-y-4">
-            <div 
+            <div
               id="footer-brand"
               className="flex items-center gap-2 cursor-pointer group"
               onClick={() => handleNavClick('home')}
             >
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 via-blue-500 to-indigo-600 flex items-center justify-center shadow-md">
-                <CalligraphyLogo className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 rounded-lg     flex items-center justify-center shadow-none">
+                <CalligraphyLogo className="w-5 h-5 text-[var(--ink)]" />
               </div>
               <span className={`font-display text-base font-bold tracking-tight ${
-                darkMode ? 'text-white' : 'text-gray-900'
+                darkMode ? 'text-[var(--ink)]' : 'text-[var(--ink)]'
               }`}>
-                salman<span className="text-cyan-500">segf</span>
+                salman<span className="text-[var(--accent-ink)]">segf</span>
               </span>
             </div>
-            
+
             <p className="text-xs md:text-sm leading-relaxed max-w-xs">
               {t.footerTagline}
             </p>
 
             {/* Social row */}
             <div className="flex items-center gap-2 pt-2">
-              <SocialLinks 
-                links={SOCIAL_LINKS} 
-                variant="footer" 
-                darkMode={darkMode} 
+              <SocialLinks
+                links={SOCIAL_LINKS}
+                variant="footer"
+                darkMode={darkMode}
                 onItemClick={() => playClickSound()}
               />
             </div>
@@ -92,7 +92,7 @@ export default function Footer({
           {/* Column 2: Navigate links (Desktop only) */}
           <div className="hidden md:block lg:col-span-2 space-y-4">
             <h4 className={`text-xs font-bold tracking-widest uppercase font-mono ${
-              darkMode ? 'text-white' : 'text-gray-900'
+              darkMode ? 'text-[var(--ink)]' : 'text-[var(--ink)]'
             }`}>
               {t.footerNavigate}
             </h4>
@@ -120,7 +120,7 @@ export default function Footer({
           {/* Column 3: Contact (Desktop only) */}
           <div className="hidden md:block lg:col-span-3 space-y-4">
             <h4 className={`text-xs font-bold tracking-widest uppercase font-mono ${
-              darkMode ? 'text-white' : 'text-gray-900'
+              darkMode ? 'text-[var(--ink)]' : 'text-[var(--ink)]'
             }`}>
               {t.footerContact}
             </h4>
@@ -150,7 +150,7 @@ export default function Footer({
           {/* Column 4: Main stack summary (Desktop only) */}
           <div className="hidden md:block lg:col-span-3 space-y-4">
             <h4 className={`text-xs font-bold tracking-widest uppercase font-mono ${
-              darkMode ? 'text-white' : 'text-gray-900'
+              darkMode ? 'text-[var(--ink)]' : 'text-[var(--ink)]'
             }`}>
               {t.footerStack}
             </h4>
@@ -165,7 +165,7 @@ export default function Footer({
 
         {/* Bottom copyright line row */}
         <div className={`pt-6 md:pt-8 border-t flex flex-wrap items-center justify-between gap-4 text-xs ${
-          darkMode ? 'border-white/5 text-gray-500' : 'border-black/5 text-gray-400'
+          darkMode ? 'border-[var(--line)] text-[var(--muted)]' : 'border-[var(--line)] text-[var(--muted)]'
         }`}>
           <span>
             © 2026 salmansegf · Salman Fidinillah · {t.footerCopyright}
