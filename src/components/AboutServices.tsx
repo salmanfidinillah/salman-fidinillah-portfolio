@@ -102,11 +102,13 @@ export default function AboutServices({ lang, t, soundEnabled }: AboutServicesPr
           <div className="about-copy">
             <p id="about-p1">{t.aboutText1}</p><p id="about-p2">{t.aboutText2}</p>
             <div id="about-stats-grid" className="stats-grid">{stats.map((stat, i) => <div key={stat.label} id={`stat-card-${i}`} className="stat-card"><span className="stat-icon">{stat.icon}</span><strong>{stat.value}</strong><span>{stat.label}</span></div>)}</div>
-            <div className="about-animation"><DesignerAnimation /><div><h3>{t.whatIDoSubtitle}</h3><span className="eyebrow">{t.whatIDo}</span></div></div>
           </div>
         </div>
         <div id="services-grid-container" className="services-section">
-          <div className="section-heading"><span className="eyebrow">{t.whatIDo}</span><h3>{t.whatIDoSubtitle}</h3></div>
+          <div className="services-heading">
+            <div className="section-heading"><span className="eyebrow">{t.whatIDo}</span><h3>{t.whatIDoSubtitle}</h3></div>
+            <DesignerAnimation className="services-animation" />
+          </div>
           <div className="services-grid">{services.map((service,i) => <div key={service.title} id={`service-card-${i}`} className="service-card"><div className="service-icon">{service.icon}</div><h4>{service.title}</h4><p>{service.desc}</p></div>)}</div>
         </div>
       </div>
